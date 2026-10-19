@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Ôn Tập: Hình Chiếu - Đối Xứng - Khoảng Cách Oxyz</title>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #800020; /* Đỏ đô Hoa Sen */
+            --secondary: #FFD700; /* Vàng tươi */
+            --accent: #1e40af;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --correct: #dcfce7;
+            --correct-border: #16a34a;
+            --wrong: #fee2e2;
+            --wrong-border: #dc2626;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); margin: 0; padding: 16px; color: #1e293b; }
+        .container { max-width: 850px; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, var(--primary), #5a0016);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .header h1 { margin: 0 0 8px 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .header p { margin: 4px 0; font-size: 0.95rem; opacity: 0.95; }
+        .mantra-box {
+            background: #fef9c3;
+            border-left: 5px solid #eab308;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .section-title {
+            background: var(--accent);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 24px 0 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .question-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+        .q-header { font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            border-radius: 12px;
+            margin-right: 6px;
+            font-weight: bold;
+        }
+        .badge-nb { background: #dbeafe; color: #1e40af; }
+        .badge-th { background: #fef3c7; color: #92400e; }
+        .badge-vd { background: #fce7f3; color: #9d174d; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-label:hover { background: #f1f5f9; border-color: #94a3b8; }
+        .option-label input { margin-right: 10px; transform: scale(1.2); }
+        
+        /* Bảng Đúng/Sai (Vote/Void) */
+        .tf-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .tf-table th, .tf-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+        .tf-table th { background: #f1f5f9; text-align: center; }
+        .tf-table td.center { text-align: center; width: 70px; }
+        
+        /* Điền khuyết */
+        .fill-input {
+            padding: 8px 12px;
+            border: 2px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 140px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .explanation {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: #f0fdf4;
+            border-left: 4px solid #16a34a;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 24px;
+            box-shadow: 0 4px 10px rgba(128,0,32,0.3);
+        }
+        .btn-submit:hover { background: #600018; }
+        .score-board {
+            display: none;
+            background: white;
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .score-num { font-size: 2.2rem; font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>ÔN TẬP: HÌNH CHIẾU - ĐỐI XỨNG - KHOẢNG CÁCH TRONG OXYZ</h1>
+        <p>Tài liệu ôn tập tương tác trực tiếp • Made by Thầy Huỳnh Phước Sang</p>
+    </div>
+
+    <div class="mantra-box">
+        <strong>💡 Ghi chú "Thần chú" cần nhớ:</strong><br>
+        1️⃣ <b>Hình chiếu:</b> "Chiếu đâu còn đó, không có về $0$"<br>
+        2️⃣ <b>Đối xứng:</b> "Đối xứng qua đâu còn đó, không có thì đổi dấu"<br>
+        3️⃣ <b>Khoảng cách ($\ge 0$):</b> "Khoảng cách đến đâu bỏ đó, còn lại căn, trị tuyệt đối"
+    </div>
+
+    <div id="scoreBoard" class="score-board">
+        <div>KẾT QUẢ BÀI LÀM CỦA EM</div>
+        <div class="score-num" id="scoreValue">0 / 21</div>
+        <p id="scoreFeedback"></p>
+        <button onclick="location.reload()" style="padding:8px 16px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">Làm lại đề</button>
+    </div>
+
+    <!-- PHẦN I: 15 CÂU TRẮC NGHIỆM -->
+    <div class="section-title">
+        <span>PHẦN I. TRẮC NGHIỆM NHIỀU LỰA CHỌN (15 Câu)</span>
+        <span style="font-size: 0.85rem; font-weight: normal;">Chọn 1 đáp án đúng nhất</span>
+    </div>
+    <div id="mcq-container"></div>
+
+    <!-- PHẦN II: 3 CÂU ĐÚNG SAI -->
+    <div class="section-title">
+        <span>PHẦN II. TRẮC NGHIỆM ĐÚNG / SAI (3 Câu)</span>
+        <span style="font-size: 0.85rem; font-weight: normal;">Tích chọn Đúng hoặc Sai cho từng mệnh đề</span>
+    </div>
+    <div id="tf-container"></div>
+
+    <!-- PHẦN III: 3 CÂU TRẢ LỜI NGẮN (ĐIỀN KHUYẾT) -->
+    <div class="section-title">
+        <span>PHẦN III. TỰ LUẬN TRẢ LỜI NGẮN - ĐIỀN KHUYẾT (3 Câu)</span>
+        <span style="font-size: 0.85rem; font-weight: normal;">Điền số thích hợp vào ô trống</span>
+    </div>
+    <div id="sa-container"></div>
+
+    <button class="btn-submit" onclick="gradeQuiz()">NỘP BÀI & XEM LỜI GIẢI CHI TIẾT</button>
+</div>
+
+<script>
+const mcqData = [
+    {
+        level: "NB",
+        q: "Câu 1: Trong không gian $Oxyz$, hình chiếu vuông góc của điểm $M(3; -4; 5)$ trên trục $Ox$ có tọa độ là:",
+        opts: ["$M'(3; 0; 0)$", "$M'(0; -4; 5)$", "$M'(-3; 4; -5)$", "$M'(0; -4; 0)$"],
+        ans: 0,
+        exp: "Áp dụng thần chú: 'Chiếu đâu còn đó, không có về 0'. Chiếu lên $Ox$ giữ nguyên $x=3$, cho $y=0, z=0 \\Rightarrow M'(3;0;0)$."
+    },
+    {
+        level: "NB",
+        q: "Câu 2: Trong không gian $Oxyz$, hình chiếu vuông góc của điểm $A(2; -1; 6)$ trên mặt phẳng $(Oxy)$ có tọa độ là:",
+        opts: ["$A'(0; 0; 6)$", "$A'(2; -1; 0)$", "$A'(2; 1; 0)$", "$A'(-2; 1; 6)$"],
+        ans: 1,
+        exp: "Chiếu lên mặt $(Oxy)$ giữ nguyên $x, y$ và cho $z=0 \\Rightarrow A'(2; -1; 0)$."
+    },
+    {
+        level: "NB",
+        q: "Câu 3: Trong không gian $Oxyz$, điểm đối xứng của điểm $M(1; -2; 3)$ qua trục $Oy$ là:",
+        opts: ["$M'(0; -2; 0)$", "$M'(1; 2; 3)$", "$M'(-1; -2; -3)$", "$M'(-1; 2; -3)$"],
+        ans: 2,
+        exp: "Thần chú: 'Đối xứng qua đâu còn đó, không có thì đổi dấu'. Qua $Oy$ giữ $y=-2$, đổi dấu $x$ và $z \\Rightarrow M'(-1; -2; -3)$."
+    },
+    {
+        level: "NB",
+        q: "Câu 4: Trong không gian $Oxyz$, tọa độ điểm $N'$ đối xứng với điểm $N(-5; 2; -4)$ qua mặt phẳng $(Oxz)$ là:",
+        opts: ["$N'(-5; -2; -4)$", "$N'(5; 2; 4)$", "$N'(-5; 0; -4)$", "$N'(5; -2; 4)$"],
+        ans: 0,
+        exp: "Đối xứng qua $(Oxz)$ giữ nguyên $x, z$ và đổi dấu $y \\Rightarrow N'(-5; -2; -4)$."
+    },
+    {
+        level: "NB",
+        q: "Câu 5: Trong không gian $Oxyz$, điểm đối xứng của $P(4; -7; 1)$ qua gốc tọa độ $O$ có tọa độ là:",
+        opts: ["$P'(0; 0; 0)$", "$P'(-4; 7; -1)$", "$P'(-4; -7; 1)$", "$P'(4; 7; 1)$"],
+        ans: 1,
+        exp: "Đối xứng qua gốc tọa độ $O$ thì đổi dấu tất cả các tọa độ: $M'(-x; -y; -z) \\Rightarrow P'(-4; 7; -1)$."
+    },
+    {
+        level: "NB",
+        q: "Câu 6: Trong không gian $Oxyz$, khoảng cách từ điểm $M(2; -5; 8)$ đến mặt phẳng $(Oxy)$ bằng:",
+        opts: ["$2$", "$-5$", "$5$", "$8$"],
+        ans: 3,
+        exp: "Khoảng cách đến mặt $(Oxy)$: bỏ $x, y$, lấy trị tuyệt đối của $z$: $d = |z| = |8| = 8$."
+    },
+    {
+        level: "NB",
+        q: "Câu 7: Trong không gian $Oxyz$, khoảng cách từ điểm $M(-6; 3; -2)$ đến mặt phẳng $(Oyz)$ bằng:",
+        opts: ["$-6$", "$6$", "$3$", "$\\sqrt{13}$"],
+        ans: 1,
+        exp: "Khoảng cách đến mặt $(Oyz)$ là $d = |x| = |-6| = 6$ (Khoảng cách luôn $\\ge 0$)."
+    },
+    {
+        level: "TH",
+        q: "Câu 8: Trong không gian $Oxyz$, khoảng cách từ điểm $M(2; 3; -4)$ đến trục $Ox$ bằng:",
+        opts: ["$2$", "$5$", "$\\sqrt{13}$", "$\\sqrt{29}$"],
+        ans: 1,
+        exp: "Thần chú: 'Khoảng cách đến đâu bỏ đó, còn lại căn'. Đến $Ox$ bỏ $x$, còn lại $d = \\sqrt{y^2 + z^2} = \\sqrt{3^2 + (-4)^2} = 5$."
+    },
+    {
+        level: "TH",
+        q: "Câu 9: Trong không gian $Oxyz$, khoảng cách từ điểm $A(-5; 12; 7)$ đến trục $Oz$ bằng:",
+        opts: ["$7$", "$13$", "$17$", "$\\sqrt{193}$"],
+        ans: 1,
+        exp: "Khoảng cách đến $Oz$ (bỏ $z$): $d = \\sqrt{x^2 + y^2} = \\sqrt{(-5)^2 + 12^2} = 13$."
+    },
+    {
+        level: "TH",
+        q: "Câu 10: Gọi $H(a; b; c)$ là hình chiếu vuông góc của điểm $M(5; -2; 9)$ lên mặt phẳng $(Oyz)$. Giá trị của biểu thức $S = a + b + c$ là:",
+        opts: ["$12$", "$7$", "$3$", "$14$"],
+        ans: 1,
+        exp: "Chiếu lên $(Oyz)$ giữ $y, z$, cho $x=0 \\Rightarrow H(0; -2; 9)$. Khi đó $S = 0 + (-2) + 9 = 7$."
+    },
+    {
+        level: "TH",
+        q: "Câu 11: Cho điểm $M(3; -4; 5)$. Khoảng cách giữa hai điểm $M$ và hình chiếu của nó trên mặt phẳng $(Oxy)$ bằng:",
+        opts: ["$3$", "$4$", "$5$", "$10$"],
+        ans: 2,
+        exp: "Khoảng cách từ $M$ đến hình chiếu của nó trên $(Oxy)$ chính là khoảng cách từ $M$ đến mặt $(Oxy)$: $d = |z| = |5| = 5$."
+    },
+    {
+        level: "TH",
+        q: "Câu 12: Gọi $M_1, M_2$ lần lượt là điểm đối xứng của $M(2; -3; 1)$ qua trục $Ox$ và trục $Oy$. Tọa độ trung điểm $I$ của đoạn $M_1M_2$ là:",
+        opts: ["$I(0; 0; -1)$", "$I(2; -3; 0)$", "$I(0; 0; 1)$", "$I(-2; 3; -1)$"],
+        ans: 0,
+        exp: "Ta có $M_1(2; 3; -1)$ và $M_2(-2; -3; -1)$. Trung điểm $I = \\left(\\frac{2-2}{2}; \\frac{3-3}{2}; \\frac{-1-1}{2}\\right) = (0; 0; -1)$."
+    },
+    {
+        level: "TH",
+        q: "Câu 13: Điểm $M(a; b; c)$ thuộc mặt phẳng $(Oxy)$ sao cho khoảng cách từ $M$ đến trục $Ox$ bằng $4$ và đến trục $Oy$ bằng $3$. Giá trị của $a^2 + b^2 + c^2$ bằng:",
+        opts: ["$7$", "$12$", "$25$", "$5$"],
+        ans: 2,
+        exp: "Vì $M \\in (Oxy)$ nên $c = 0$. Khoảng cách đến $Ox$ là $\\sqrt{b^2+0} = |b| = 4$; đến $Oy$ là $|a| = 3$. Vậy $a^2+b^2+c^2 = 3^2 + 4^2 + 0 = 25$."
+    },
+    {
+        level: "VD",
+        q: "Câu 14 (Phân hóa): Gọi $A, B, C$ lần lượt là hình chiếu vuông góc của điểm $M(2; -4; 6)$ lên các trục tọa độ $Ox, Oy, Oz$. Phương trình mặt phẳng $(ABC)$ là:",
+        opts: [
+            "$\\frac{x}{2} + \\frac{y}{-4} + \\frac{z}{6} = 1$",
+            "$\\frac{x}{2} + \\frac{y}{-4} + \\frac{z}{6} = 0$",
+            "$2x - 4y + 6z - 1 = 0$",
+            "$\\frac{x}{-2} + \\frac{y}{4} + \\frac{z}{-6} = 1$"
+        ],
+        ans: 0,
+        exp: "Chiếu lên 3 trục ta được $A(2; 0; 0), B(0; -4; 0), C(0; 0; 6)$. Theo phương trình mặt chắn: $\\frac{x}{2} + \\frac{y}{-4} + \\frac{z}{6} = 1$."
+    },
+    {
+        level: "VD",
+        q: "Câu 15 (Phân hóa): Cho điểm $M(x; y; z)$ trong không gian $Oxyz$ có khoảng cách đến các trục $Ox, Oy, Oz$ lần lượt bằng $5, \\sqrt{41}, \\sqrt{34}$. Khoảng cách từ điểm $M$ đến gốc tọa độ $O$ bằng:",
+        opts: ["$\\sqrt{50}$", "$\\sqrt{80}$", "$10$", "$\\sqrt{40}$"],
+        ans: 0,
+        exp: "Ta có hệ: $y^2+z^2 = 25$, $x^2+z^2 = 41$, $x^2+y^2 = 34$. Cộng vế theo vế: $2(x^2+y^2+z^2) = 25 + 41 + 34 = 100 \\Rightarrow x^2+y^2+z^2 = 50$. Vậy $OM = \\sqrt{x^2+y^2+z^2} = \\sqrt{50}$."
+    }
+];
+
+const tfData = [
+    {
+        q: "Câu 16: Trong không gian $Oxyz$, cho điểm $M(3; -4; 12)$. Xét tính đúng sai của các mệnh đề sau:",
+        items: [
+            { text: "a) Hình chiếu vuông góc của điểm $M$ trên trục $Oz$ là điểm $M_1(0; 0; 12)$.", ans: true },
+            { text: "b) Điểm đối xứng của $M$ qua mặt phẳng $(Oxy)$ có tọa độ là $M_2(-3; 4; 12)$.", ans: false },
+            { text: "c) Khoảng cách từ điểm $M$ đến mặt phẳng $(Oxz)$ bằng $-4$.", ans: false },
+            { text: "d) Khoảng cách từ điểm $M$ đến trục $Oz$ bằng $5$.", ans: true }
+        ],
+        exp: "a) Đúng (chiếu lên $Oz$ giữ $z=12$, còn lại bằng $0$).<br>b) Sai (đối xứng qua $(Oxy)$ giữ $x, y$, đổi dấu $z \\Rightarrow (3; -4; -12)$).<br>c) Sai (khoảng cách phải $\\ge 0$, $d = |y| = |-4| = 4$).<br>d) Đúng ($d = \\sqrt{x^2+y^2} = \\sqrt{3^2+(-4)^2} = 5$)."
+    },
+    {
+        q: "Câu 17: Trong không gian $Oxyz$, cho điểm $A(-2; 1; -2)$. Xét tính đúng sai của các mệnh đề sau:",
+        items: [
+            { text: "a) Hình chiếu của $A$ lên mặt phẳng $(Oxz)$ là điểm $H(-2; 0; -2)$.", ans: true },
+            { text: "b) Điểm đối xứng của $A$ qua gốc tọa độ $O$ là $A'(2; -1; 2)$.", ans: true },
+            { text: "c) Khoảng cách từ $A$ đến trục $Ox$ bằng $\\sqrt{5}$.", ans: true },
+            { text: "d) Tổng khoảng cách từ điểm $A$ đến ba mặt phẳng tọa độ $(Oxy), (Oyz), (Oxz)$ bằng $3$.", ans: false }
+        ],
+        exp: "a) Đúng (chiếu lên $(Oxz)$ giữ $x, z$, cho $y=0$).<br>b) Đúng (đối xứng qua $O$ đổi dấu tất cả).<br>c) Đúng ($d(A, Ox) = \\sqrt{y^2+z^2} = \\sqrt{1^2+(-2)^2} = \\sqrt{5}$).<br>d) Sai (Tổng khoảng cách $= |z| + |x| + |y| = |-2| + |-2| + |1| = 5 \\neq 3$)."
+    },
+    {
+        q: "Câu 18: Trong không gian $Oxyz$, cho điểm $P(a; b; c)$ có hình chiếu trên các trục $Ox, Oy, Oz$ lần lượt là $A(2; 0; 0)$, $B(0; -3; 0)$, $C(0; 0; 6)$. Xét tính đúng sai của các mệnh đề sau:",
+        items: [
+            { text: "a) Tọa độ của điểm $P$ là $P(2; -3; 6)$.", ans: true },
+            { text: "b) Khoảng cách từ điểm $P$ đến mặt phẳng $(Oyz)$ bằng $6$.", ans: false },
+            { text: "c) Điểm đối xứng của $P$ qua trục $Ox$ là $P'(2; 3; -6)$.", ans: true },
+            { text: "d) Khoảng cách từ điểm $P$ đến điểm đối xứng của nó qua gốc tọa độ $O$ bằng $14$.", ans: true }
+        ],
+        exp: "a) Đúng.<br>b) Sai ($d(P, (Oyz)) = |x| = |2| = 2$).<br>c) Đúng (qua $Ox$ giữ $x$, đổi dấu $y, z$).<br>d) Đúng (Điểm đối xứng qua $O$ là $P_1(-2; 3; -6)$, khoảng cách $PP_1 = 2OP = 2\\sqrt{2^2+(-3)^2+6^2} = 2 \\cdot 7 = 14$)."
+    }
+];
+
+const saData = [
+    {
+        q: "Câu 19: Trong không gian $Oxyz$, cho điểm $M(6; -8; 5)$. Khoảng cách từ điểm $M$ đến trục $Oz$ bằng [INPUT] .",
+        ans: "10",
+        exp: "Áp dụng công thức khoảng cách đến trục $Oz$ (bỏ $z$): $d = \\sqrt{x^2 + y^2} = \\sqrt{6^2 + (-8)^2} = 10$."
+    },
+    {
+        q: "Câu 20: Gọi $M'(a; b; c)$ là điểm đối xứng của điểm $M(-3; 5; -7)$ qua mặt phẳng $(Oyz)$. Giá trị của biểu thức $T = a + b + c$ bằng [INPUT] .",
+        ans: "1",
+        exp: "Đối xứng qua mặt $(Oyz)$ giữ nguyên $y, z$ và đổi dấu $x \\Rightarrow M'(3; 5; -7)$. Vậy $T = 3 + 5 + (-7) = 1$."
+    },
+    {
+        q: "Câu 21: Gọi $H, K$ lần lượt là hình chiếu vuông góc của điểm $A(3; 4; -12)$ lên mặt phẳng $(Oxy)$ và trục $Oz$. Độ dài đoạn thẳng $HK$ bằng [INPUT] .",
+        ans: "13",
+        exp: "Ta có $H(3; 4; 0)$ và $K(0; 0; -12)$. Độ dài $HK = \\sqrt{(0-3)^2 + (0-4)^2 + (-12-0)^2} = \\sqrt{9 + 16 + 144} = \\sqrt{169} = 13$."
+    }
+];
+
+function renderQuiz() {
+    // Render MCQ
+    const mcqContainer = document.getElementById('mcq-container');
+    mcqData.forEach((item, idx) => {
+        let badgeClass = item.level === 'NB' ? 'badge-nb' : (item.level === 'TH' ? 'badge-th' : 'badge-vd');
+        let badgeText = item.level === 'NB' ? 'Nhận biết' : (item.level === 'TH' ? 'Thông hiểu' : 'Vận dụng');
+        let optsHtml = item.opts.map((opt, oIdx) => `
+            <label class="option-label" id="mcq-label-${idx}-${oIdx}">
+                <input type="radio" name="mcq-${idx}" value="${oIdx}">
+                <span><b>${String.fromCharCode(65 + oIdx)}.</b> ${opt}</span>
+            </label>
+        `).join('');
+        mcqContainer.innerHTML += `
+            <div class="question-card" id="mcq-card-${idx}">
+                <div class="q-header"><span class="badge ${badgeClass}">${badgeText}</span> ${item.q}</div>
+                <div class="options-grid">${optsHtml}</div>
+                <div class="explanation" id="mcq-exp-${idx}"><b>Lời giải:</b> ${item.exp}</div>
+            </div>
+        `;
+    });
+
+    // Render True/False
+    const tfContainer = document.getElementById('tf-container');
+    tfData.forEach((item, idx) => {
+        let rowsHtml = item.items.map((sub, sIdx) => `
+            <tr id="tf-row-${idx}-${sIdx}">
+                <td>${sub.text}</td>
+                <td class="center"><input type="radio" name="tf-${idx}-${sIdx}" value="true" style="transform:scale(1.3);"></td>
+                <td class="center"><input type="radio" name="tf-${idx}-${sIdx}" value="false" style="transform:scale(1.3);"></td>
+            </tr>
+        `).join('');
+        tfContainer.innerHTML += `
+            <div class="question-card">
+                <div class="q-header">${item.q}</div>
+                <table class="tf-table">
+                    <thead>
+                        <tr>
+                            <th>Mệnh đề</th>
+                            <th>Đúng</th>
+                            <th>Sai</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>
+                <div class="explanation" id="tf-exp-${idx}"><b>Lời giải chi tiết:</b><br>${item.exp}</div>
+            </div>
+        `;
+    });
+
+    // Render Short Answer (Fill in the blank)
+    const saContainer = document.getElementById('sa-container');
+    saData.forEach((item, idx) => {
+        let questionHtml = item.q.replace('[INPUT]', `<input type="text" class="fill-input" id="sa-input-${idx}" placeholder="Điền đáp án...">`);
+        saContainer.innerHTML += `
+            <div class="question-card">
+                <div class="q-header" style="line-height: 2.2;">${questionHtml}</div>
+                <div class="explanation" id="sa-exp-${idx}"><b>Đáp án đúng: ${item.ans}</b><br>${item.exp}</div>
+            </div>
+        `;
+    });
+
+    if (window.MathJax) {
+        MathJax.typesetPromise();
+    }
+}
+
+function gradeQuiz() {
+    let score = 0;
+    let total = mcqData.length + tfData.length + saData.length;
+
+    // Chấm MCQ
+    mcqData.forEach((item, idx) => {
+        const selected = document.querySelector(`input[name="mcq-${idx}"]:checked`);
+        const correctLabel = document.getElementById(`mcq-label-${idx}-${item.ans}`);
+        correctLabel.style.background = "var(--correct)";
+        correctLabel.style.borderColor = "var(--correct-border)";
+
+        if (selected) {
+            const val = parseInt(selected.value);
+            if (val === item.ans) {
+                score += 1;
+            } else {
+                const wrongLabel = document.getElementById(`mcq-label-${idx}-${val}`);
+                wrongLabel.style.background = "var(--wrong)";
+                wrongLabel.style.borderColor = "var(--wrong-border)";
+            }
+        }
+        document.getElementById(`mcq-exp-${idx}`).style.display = "block";
+    });
+
+    // Chấm Đúng/Sai
+    tfData.forEach((item, idx) => {
+        let subCorrect = 0;
+        item.items.forEach((sub, sIdx) => {
+            const selected = document.querySelector(`input[name="tf-${idx}-${sIdx}"]:checked`);
+            const row = document.getElementById(`tf-row-${idx}-${sIdx}`);
+            if (selected && (selected.value === String(sub.ans))) {
+                subCorrect++;
+                row.style.background = "var(--correct)";
+            } else {
+                row.style.background = "var(--wrong)";
+            }
+        });
+        if (subCorrect === 4) score += 1;
+        else if (subCorrect === 3) score += 0.5;
+        else if (subCorrect === 2) score += 0.25;
+        else if (subCorrect === 1) score += 0.1;
+
+        document.getElementById(`tf-exp-${idx}`).style.display = "block";
+    });
+
+    // Chấm Điền khuyết
+    saData.forEach((item, idx) => {
+        const inp = document.getElementById(`sa-input-${idx}`);
+        const userVal = inp.value.trim().replace(',', '.');
+        if (userVal === item.ans) {
+            score += 1;
+            inp.style.background = "var(--correct)";
+            inp.style.borderColor = "var(--correct-border)";
+        } else {
+            inp.style.background = "var(--wrong)";
+            inp.style.borderColor = "var(--wrong-border)";
+        }
+        document.getElementById(`sa-exp-${idx}`).style.display = "block";
+    });
+
+    const board = document.getElementById('scoreBoard');
+    board.style.display = "block";
+    document.getElementById('scoreValue').innerText = `${score.toFixed(2).replace(/\.00$/, '')} / ${total}`;
+    document.getElementById('scoreFeedback').innerText = score >= 18 ? "Xuất sắc! Em đã thuộc lòng các câu thần chú Oxyz của thầy!" : "Hãy xem kỹ phần lời giải bên dưới để nắm chắc thần chú nhé!";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.onload = renderQuiz;
+</script>
+</body>
+</html>
