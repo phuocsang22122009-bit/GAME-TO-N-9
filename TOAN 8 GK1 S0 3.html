@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đề Ôn Tập Giữa Kì I Toán 8 - Thầy Huỳnh Phước Sang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #f1f5f9;
+        }
+        .option-btn {
+            transition: all 0.15s ease-in-out;
+        }
+        .option-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        sup {
+            font-size: 0.72em;
+            vertical-align: super;
+            line-height: 0;
+        }
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 0.85em;
+            margin: 0 2px;
+            line-height: 1.1;
+        }
+        .frac > span:first-child {
+            border-bottom: 1.5px solid currentColor;
+            padding: 0 3px;
+        }
+        .frac > span:last-child {
+            padding: 0 3px;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-28">
+
+    <!-- Thanh trạng thái cố định phía trên cho điện thoại -->
+    <div class="sticky top-0 z-30 bg-[#800020] text-white shadow-md border-b-4 border-amber-400">
+        <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div>
+                <h1 class="text-sm sm:text-base font-extrabold uppercase tracking-tight leading-tight">
+                    Đề Ôn Tập Giữa Kì I • Toán 8
+                </h1>
+                <p class="text-xs text-amber-200 font-medium">Thầy Huỳnh Phước Sang • Chuẩn 18 câu (10 điểm)</p>
+            </div>
+            <div class="text-right">
+                <span id="progress-badge" class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-bold">
+                    Đã làm: 0/18
+                </span>
+            </div>
+        </div>
+        <div class="w-full bg-black/20 h-1.5">
+            <div id="progress-bar" class="bg-amber-400 h-1.5 transition-all duration-300" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="max-w-2xl mx-auto px-3 sm:px-4 pt-4">
+
+        <!-- Banner báo khóa khi đã nộp bài -->
+        <div id="lock-banner" class="hidden bg-rose-50 border-2 border-rose-600 text-rose-900 rounded-2xl p-3.5 mb-4 text-center font-bold text-xs sm:text-sm shadow-sm">
+            🔒 BÀI THI ĐÃ NỘP VÀ KHÓA LẠI (CHỈ ĐƯỢC LÀM 1 LẦN DUY NHẤT)
+        </div>
+
+        <!-- Hộp Bí Kíp Tóm tắt 3 Chương -->
+        <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3.5 mb-4 shadow-sm">
+            <button onclick="toggleMantra()" class="w-full flex items-center justify-between text-left font-bold text-amber-900 text-xs sm:text-sm">
+                <span class="flex items-center gap-2">
+                    <span class="text-base">📚</span> Bấm xem Tóm tắt 3 Chương & Quy chế thi
+                </span>
+                <span id="mantra-icon" class="text-xs bg-amber-200 px-2.5 py-1 rounded-lg text-amber-900 font-semibold">Thu gọn ▲</span>
+            </button>
+            <div id="mantra-content" class="mt-3 pt-3 border-t border-amber-200 text-xs sm:text-sm space-y-2 text-slate-700">
+                <div class="bg-white p-2.5 rounded-xl border border-amber-100">
+                    <b class="text-[#800020]">⚠️ Quy chế:</b> Đề gồm <b>12 câu Trắc nghiệm</b> (6,0đ) + <b>3 câu Đúng/Sai</b> (3,0đ) + <b>3 câu Điền khuyết</b> (1,0đ). Học sinh <b>chỉ được nộp bài 1 lần duy nhất</b>!
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-amber-100">
+                    <b class="text-blue-700">1. Đa thức & Hằng đẳng thức:</b><br>
+                    • Nhân đơn thức: Nhân hệ số với hệ số, cộng số mũ của từng biến.<br>
+                    • (A ± B)<sup>2</sup> = A<sup>2</sup> ± 2AB + B<sup>2</sup> ; A<sup>3</sup> − B<sup>3</sup> = (A − B)(A<sup>2</sup> + AB + B<sup>2</sup>).
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-amber-100">
+                    <b class="text-emerald-700">2. Tứ giác & Hình thang cân:</b><br>
+                    • Tổng 4 góc trong tứ giác luôn bằng 360°.<br>
+                    • Hình thang có 2 góc kề một đáy bằng nhau là <b>hình thang cân</b>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng kết quả sau khi nộp bài -->
+        <div id="result-box" class="hidden bg-white border-2 border-[#800020] rounded-2xl p-5 mb-5 text-center shadow-lg">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Điểm số chính thức của em</div>
+            <div id="score-text" class="text-4xl font-extrabold text-[#800020] my-1">0 / 10 điểm</div>
+            <div id="score-detail" class="text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 py-2 px-3 rounded-xl my-2 inline-block"></div>
+            <p id="score-comment" class="text-xs sm:text-sm font-medium text-slate-600 mt-1"></p>
+        </div>
+
+        <!-- PHẦN I: 12 CÂU TRẮC NGHIỆM -->
+        <div class="bg-blue-800 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm mb-3 flex items-center justify-between shadow-sm">
+            <span>PHẦN I. TRẮC NGHIỆM 4 LỰA CHỌN (6,0 điểm)</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded text-[11px]">12 câu</span>
+        </div>
+        <div id="mcq-container" class="space-y-3.5 mb-6"></div>
+
+        <!-- PHẦN II: 3 CÂU ĐÚNG SAI (VOTE BOARD) -->
+        <div class="bg-rose-800 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm mb-3 flex items-center justify-between shadow-sm">
+            <span>PHẦN II. ĐÚNG / SAI - VOTE BOARD (3,0 điểm)</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded text-[11px]">3 câu</span>
+        </div>
+        <div id="tf-container" class="space-y-3.5 mb-6"></div>
+
+        <!-- PHẦN III: 3 CÂU TRẢ LỜI NGẮN (ĐIỀN KHUYẾT) -->
+        <div class="bg-emerald-800 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm mb-3 flex items-center justify-between shadow-sm">
+            <span>PHẦN III. TRẢ LỜI NGẮN ĐIỀN KHUYẾT (1,0 điểm)</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded text-[11px]">3 câu</span>
+        </div>
+        <div id="sa-container" class="space-y-3.5 mb-6"></div>
+
+    </div>
+
+    <!-- Nút Nộp bài cố định ở đáy màn hình điện thoại -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-200 p-3 z-40">
+        <div class="max-w-2xl mx-auto">
+            <button id="submit-btn" onclick="openConfirmModal()" class="w-full bg-[#800020] hover:bg-[#600018] active:scale-[0.99] text-white font-bold py-3.5 px-6 rounded-xl text-sm sm:text-base shadow-md flex items-center justify-center gap-2 transition-all">
+                <span>✅ NỘP BÀI & KHÓA KẾT QUẢ (CHỈ LÀM 1 LẦN)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hộp thoại xác nhận nộp bài trên điện thoại -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 text-center shadow-2xl border-t-4 border-[#800020]">
+            <div class="text-3xl mb-2">⚠️</div>
+            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 mb-1">Xác nhận nộp bài?</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mb-4 leading-relaxed">
+                Sau khi bấm xác nhận, hệ thống sẽ chấm điểm và <b>khóa bài vĩnh viễn</b>. Em chỉ được nộp bài <b>1 lần duy nhất</b>!
+            </p>
+            <div class="flex gap-2.5">
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 font-bold text-xs sm:text-sm text-slate-700 bg-slate-100">
+                    Xem lại bài
+                </button>
+                <button onclick="submitAndLockQuiz()" class="flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-[#800020] shadow">
+                    Nộp & Khóa ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "toan8_mobile_18cau_lock_v2";
+
+        // Hình vẽ SVG trực quan cho các câu Hình học Chương III
+        const svgCau10 = `
+        <div class="my-2.5 p-2 bg-slate-50 border border-slate-200 rounded-xl flex justify-center">
+            <svg width="190" height="110" viewBox="0 0 200 125">
+                <polygon points="30,105 42,50 115,20 148,105" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
+                <text x="18" y="115" font-size="12" font-weight="bold">A</text>
+                <text x="28" y="48" font-size="12" font-weight="bold">B</text>
+                <text x="115" y="14" font-size="12" font-weight="bold">C</text>
+                <text x="154" y="115" font-size="12" font-weight="bold">D</text>
+                <text x="36" y="100" font-size="11" fill="#1e293b" font-weight="bold">80°</text>
+                <text x="45" y="64" font-size="11" fill="#1e293b" font-weight="bold">125°</text>
+                <text x="104" y="38" font-size="13" font-weight="bold" fill="#dc2626">x</text>
+                <text x="120" y="100" font-size="11" fill="#1e293b" font-weight="bold">70°</text>
+            </svg>
+        </div>`;
+
+        const svgCau15 = `
+        <div class="my-2.5 p-2 bg-slate-50 border border-slate-200 rounded-xl flex justify-center">
+            <svg width="200" height="105" viewBox="0 0 210 115">
+                <polygon points="50,25 130,25 175,95 25,95" fill="#fefce8" stroke="#854d0e" stroke-width="2"/>
+                <circle cx="50" cy="25" r="3" fill="#1d4ed8"/>
+                <circle cx="130" cy="25" r="3" fill="#1d4ed8"/>
+                <circle cx="175" cy="95" r="3" fill="#1d4ed8"/>
+                <circle cx="25" cy="95" r="3" fill="#1d4ed8"/>
+                <text x="38" y="20" font-size="12" font-weight="bold">A</text>
+                <text x="135" y="20" font-size="12" font-weight="bold">D</text>
+                <text x="10" y="100" font-size="12" font-weight="bold">B</text>
+                <text x="182" y="100" font-size="12" font-weight="bold">C</text>
+                <text x="52" y="42" font-size="10" fill="#dc2626" font-weight="bold">95°</text>
+                <text x="112" y="42" font-size="10" fill="#dc2626" font-weight="bold">120°</text>
+                <text x="148" y="90" font-size="10" fill="#dc2626" font-weight="bold">60°</text>
+            </svg>
+        </div>`;
+
+        const svgCau17 = `
+        <div class="my-2.5 p-2 bg-slate-50 border border-slate-200 rounded-xl flex justify-center">
+            <svg width="175" height="115" viewBox="0 0 180 120">
+                <polygon points="30,60 85,15 150,55 85,105" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+                <text x="14" y="64" font-size="12" font-weight="bold">E</text>
+                <text x="82" y="12" font-size="12" font-weight="bold">F</text>
+                <text x="155" y="59" font-size="12" font-weight="bold">G</text>
+                <text x="82" y="118" font-size="12" font-weight="bold">H</text>
+                <text x="42" y="64" font-size="11" fill="#1e293b" font-weight="bold">100°</text>
+                <text x="79" y="30" font-size="10" fill="#dc2626" font-weight="bold">90°</text>
+                <text x="79" y="96" font-size="10" fill="#dc2626" font-weight="bold">90°</text>
+                <text x="130" y="59" font-size="13" fill="#dc2626" font-weight="bold">x</text>
+            </svg>
+        </div>`;
+
+        // PHẦN I: 12 CÂU TRẮC NGHIỆM (6,0 điểm)
+        const mcqQuestions = [
+            {
+                id: 1,
+                level: "Nhận biết",
+                badgeColor: "bg-blue-100 text-blue-800",
+                q: "Câu 1 (Bài 1a): Thu gọn đơn thức A = 2xy<sup>2</sup> · 4y và xác định bậc của đơn thức thu gọn:",
+                opts: ["8xy<sup>3</sup> (Bậc 4)", "8xy<sup>2</sup> (Bậc 3)", "6xy<sup>3</sup> (Bậc 4)", "8x<sup>2</sup>y<sup>3</sup> (Bậc 5)"],
+                ans: 0,
+                exp: "Ta có A = (2 · 4) · x · (y<sup>2</sup> · y) = 8xy<sup>3</sup>. Tổng số mũ của các biến là 1 + 3 = 4 nên đơn thức có bậc 4."
+            },
+            {
+                id: 2,
+                level: "Nhận biết",
+                badgeColor: "bg-blue-100 text-blue-800",
+                q: `Câu 2 (Bài 1e): Thu gọn đơn thức B = (−5y) · (<span class="frac"><span>2</span><span>3</span></span>x)<sup>2</sup> ta được kết quả là:`,
+                opts: [
+                    `−<span class="frac"><span>10</span><span>3</span></span>x<sup>2</sup>y`,
+                    `−<span class="frac"><span>20</span><span>9</span></span>x<sup>2</sup>y`,
+                    `<span class="frac"><span>20</span><span>9</span></span>x<sup>2</sup>y`,
+                    `−<span class="frac"><span>20</span><span>3</span></span>xy<sup>2</sup>`
+                ],
+                ans: 1,
+                exp: `Bình phương trước khi nhân: B = (−5y) · <span class="frac"><span>4</span><span>9</span></span>x<sup>2</sup> = −<span class="frac"><span>20</span><span>9</span></span>x<sup>2</sup>y.`
+            },
+            {
+                id: 3,
+                level: "Thông hiểu",
+                badgeColor: "bg-amber-100 text-amber-800",
+                q: "Câu 3 (Bài 2b): Rút gọn đa thức P = 8xy<sup>2</sup> − 4x<sup>2</sup>y − 2xy<sup>2</sup> + 5x<sup>2</sup>y − 5 ta được:",
+                opts: [
+                    "6xy<sup>2</sup> + x<sup>2</sup>y − 5",
+                    "10xy<sup>2</sup> − 9x<sup>2</sup>y − 5",
+                    "6xy<sup>2</sup> − x<sup>2</sup>y − 5",
+                    "7x<sup>2</sup>y<sup>2</sup> − 5"
+                ],
+                ans: 0,
+                exp: "Nhóm các hạng tử đồng dạng: P = (8xy<sup>2</sup> − 2xy<sup>2</sup>) + (−4x<sup>2</sup>y + 5x<sup>2</sup>y) − 5 = 6xy<sup>2</sup> + x<sup>2</sup>y − 5."
+            },
+            {
+                id: 4,
+                level: "Thông hiểu",
+                badgeColor: "bg-amber-100 text-amber-800",
+                q: `Câu 4 (Bài 3a): Giá trị của đa thức M = 3x<sup>2</sup>y − 7x<sup>2</sup>y + 6x<sup>2</sup>y tại x = <span class="frac"><span>1</span><span>2</span></span>; y = 2 bằng:`,
+                opts: ["2", "1", "4", "−1"],
+                ans: 1,
+                exp: "Rút gọn trước: M = (3 − 7 + 6)x<sup>2</sup>y = 2x<sup>2</sup>y. Thay x = 1/2; y = 2 vào: M = 2 · (1/2)<sup>2</sup> · 2 = 1."
+            },
+            {
+                id: 5,
+                level: "Thông hiểu",
+                badgeColor: "bg-amber-100 text-amber-800",
+                q: "Câu 5 (Bài 4c): Thực hiện phép tính (x + 3y + xy<sup>2</sup>) − (x<sup>2</sup>y − xy<sup>2</sup> − 2y) ta được:",
+                opts: [
+                    "x + y − x<sup>2</sup>y",
+                    "x + 5y + 2xy<sup>2</sup> − x<sup>2</sup>y",
+                    "x + 5y − x<sup>2</sup>y",
+                    "x + y + 2xy<sup>2</sup> − x<sup>2</sup>y"
+                ],
+                ans: 1,
+                exp: "Phá ngoặc đổi dấu: x + 3y + xy<sup>2</sup> − x<sup>2</sup>y + xy<sup>2</sup> + 2y = x + 5y + 2xy<sup>2</sup> − x<sup>2</sup>y."
+            },
+            {
+                id: 6,
+                level: "Thông hiểu",
+                badgeColor: "bg-amber-100 text-amber-800",
+                q: "Câu 6 (Bài 5e): Kết quả của phép chia đa thức (4x<sup>3</sup>y<sup>2</sup> − 8x<sup>2</sup>y + 10xy) : (2xy) là:",
+                opts: [
+                    "2x<sup>2</sup>y − 4x + 5",
+                    "2x<sup>2</sup>y − 4xy + 5",
+                    "2xy<sup>2</sup> − 4x + 5",
+                    "2x<sup>2</sup>y − 6x + 8"
+                ],
+                ans: 0,
+                exp: "Chia từng hạng tử cho 2xy: (4x<sup>3</sup>y<sup>2</sup> : 2xy) − (8x<sup>2</sup>y : 2xy) + (10xy : 2xy) = 2x<sup>2</sup>y − 4x + 5."
+            },
+            {
+                id: 7,
+                level: "Nhận biết",
+                badgeColor: "bg-blue-100 text-blue-800",
+                q: "Câu 7 (Bài 6d): Khai triển hằng đẳng thức (2x − 1)<sup>2</sup> ta được:",
+                opts: [
+                    "2x<sup>2</sup> − 4x + 1",
+                    "4x<sup>2</sup> − 2x + 1",
+                    "4x<sup>2</sup> − 4x + 1",
+                    "4x<sup>2</sup> − 1"
+                ],
+                ans: 2,
+                exp: "Áp dụng (A − B)<sup>2</sup> = A<sup>2</sup> − 2AB + B<sup>2</sup> = (2x)<sup>2</sup> − 2·2x·1 + 1<sup>2</sup> = 4x<sup>2</sup> − 4x + 1."
+            },
+            {
+                id: 8,
+                level: "Thông hiểu",
+                badgeColor: "bg-amber-100 text-amber-800",
+                q: "Câu 8 (Bài 7d): Sử dụng hằng đẳng thức thu gọn biểu thức 8x<sup>3</sup> + 12x<sup>2</sup> + 6x + 1 ta được:",
+                opts: ["(2x + 1)<sup>3</sup>", "(8x + 1)<sup>3</sup>", "(2x − 1)<sup>3</sup>", "(4x + 1)<sup>3</sup>"],
+                ans: 0,
+                exp: "Ta có 8x<sup>3</sup> + 12x<sup>2</sup> + 6x + 1 = (2x)<sup>3</sup> + 3·(2x)<sup>2</sup>·1 + 3·(2x)·1<sup>2</sup> + 1<sup>3</sup> = (2x + 1)<sup>3</sup>."
+            },
+            {
+                id: 9,
+                level: "Nhận biết",
+                badgeColor: "bg-blue-100 text-blue-800",
+                q: "Câu 9 (Bài 9): Khẳng định nào sau đây là ĐÚNG?",
+                opts: [
+                    "Hình thang có 2 cạnh đối bằng nhau là hình thang cân.",
+                    "Hình thang có 2 góc kề 1 đáy bằng nhau là hình thang cân.",
+                    "Hình thang cân là tứ giác có 2 cạnh bên bằng nhau.",
+                    "Hình thang cân là tứ giác có 2 đường chéo bằng nhau."
+                ],
+                ans: 1,
+                exp: "Theo định nghĩa: Hình thang có hai góc kề một đáy bằng nhau là hình thang cân."
+            },
+            {
+                id: 10,
+                level: "Thông hiểu",
+                badgeColor: "bg-amber-100 text-amber-800",
+                q: "Câu 10 (Bài 11a): Cho tứ giác ABCD có số đo các góc như hình vẽ. Số đo góc x tại đỉnh C bằng:" + svgCau10,
+                opts: ["85°", "95°", "75°", "105°"],
+                ans: 0,
+                exp: "Tổng 4 góc của một tứ giác bằng 360° ⇒ x = 360° − (80° + 125° + 70°) = 85°."
+            },
+            {
+                id: 11,
+                level: "Vận dụng",
+                badgeColor: "bg-purple-100 text-purple-800",
+                q: "Câu 11 (Phân hóa - Bài 8a): Giá trị nhỏ nhất của biểu thức A = 4x<sup>2</sup> − 8x + 15 là:",
+                opts: ["15", "11", "7", "1"],
+                ans: 1,
+                exp: "Biến đổi A = (2x)<sup>2</sup> − 2·2x·2 + 2<sup>2</sup> + 11 = (2x − 2)<sup>2</sup> + 11 ≥ 11 với mọi x. Dấu '=' xảy ra khi x = 1. Vậy GTNN của A là 11."
+            },
+            {
+                id: 12,
+                level: "Vận dụng cao",
+                badgeColor: "bg-rose-100 text-rose-800",
+                q: "Câu 12 (Phân hóa - Bài 15): Cho tứ giác ABCD có AB = BC và AC là tia phân giác của góc A. Kết luận nào sau đây là đúng?",
+                opts: [
+                    "ABCD là hình thang có hai đáy AD // BC.",
+                    "ABCD là hình thang có hai đáy AB // CD.",
+                    "ABCD có hai đường chéo vuông góc.",
+                    "ABCD có góc B bằng góc D."
+                ],
+                ans: 0,
+                exp: "Tam giác ABC cân tại B (vì AB = BC) ⇒ góc BAC = góc BCA. Mà AC là phân giác góc A ⇒ góc DAC = góc BAC. Suy ra góc DAC = góc BCA (so le trong) ⇒ AD // BC ⇒ ABCD là hình thang."
+            }
+        ];
+
+        // PHẦN II: 3 CÂU ĐÚNG SAI (3,0 điểm)
+        const tfQuestions = [
+            {
+                id: 13,
+                q: `Câu 13 (Bài 2d, 5c): Cho hai biểu thức P = (2x + y)(x − 5y) và Q = <span class="frac"><span>1</span><span>2</span></span>x<sup>4</sup>y · (−<span class="frac"><span>2</span><span>3</span></span>x<sup>3</sup>y<sup>2</sup>) − <span class="frac"><span>1</span><span>3</span></span>x<sup>7</sup>y<sup>3</sup>. Xét tính Đúng/Sai của các mệnh đề:`,
+                items: [
+                    { label: "a) Kết quả nhân đa thức P sau khi thu gọn là P = 2x<sup>2</sup> − 9xy − 5y<sup>2</sup>.", ans: true },
+                    { label: "b) Hệ số của hạng tử xy trong đa thức P sau khi thu gọn bằng 9.", ans: false },
+                    { label: `c) Thu gọn biểu thức Q ta được Q = −<span class="frac"><span>2</span><span>3</span></span>x<sup>7</sup>y<sup>3</sup>.`, ans: true },
+                    { label: "d) Đơn thức Q sau khi thu gọn có bậc bằng 7.", ans: false }
+                ],
+                exp: "a) Đúng: P = 2x<sup>2</sup> − 10xy + xy − 5y<sup>2</sup> = 2x<sup>2</sup> − 9xy − 5y<sup>2</sup>.<br>b) Sai: Hệ số của xy là −9.<br>c) Đúng: Q = −(1/3)x<sup>7</sup>y<sup>3</sup> − (1/3)x<sup>7</sup>y<sup>3</sup> = −(2/3)x<sup>7</sup>y<sup>3</sup>.<br>d) Sai: Bậc của Q là 7 + 3 = 10."
+            },
+            {
+                id: 14,
+                q: "Câu 14 (Bài 6, 7, 8): Xét các bài toán về Hằng đẳng thức đáng nhớ. Xét tính Đúng/Sai của các mệnh đề:",
+                items: [
+                    { label: "a) Đa thức x<sup>3</sup> − 27x<sup>2</sup> + 9x − 27 viết gọn được thành (x − 3)<sup>3</sup>.", ans: false },
+                    { label: "b) Khai triển hằng đẳng thức (x − 2)<sup>3</sup> ta được x<sup>3</sup> − 6x<sup>2</sup> + 12x − 8.", ans: true },
+                    { label: "c) Biểu thức x<sup>3</sup> − 64 viết dưới dạng tích là (x − 4)(x<sup>2</sup> + 4x + 16).", ans: true },
+                    { label: "d) Giá trị nhỏ nhất của biểu thức B = x<sup>2</sup> − 6x + 20 bằng 11 đạt tại x = 3.", ans: true }
+                ],
+                exp: "a) Sai: Vì (x − 3)<sup>3</sup> = x<sup>3</sup> − 9x<sup>2</sup> + 27x − 27.<br>b) Đúng.<br>c) Đúng: x<sup>3</sup> − 4<sup>3</sup> = (x − 4)(x<sup>2</sup> + 4x + 16).<br>d) Đúng: B = (x − 3)<sup>2</sup> + 11 ≥ 11."
+            },
+            {
+                id: 15,
+                q: "Câu 15 (Bài 13, 14): Cho tứ giác ABCD có số đo các góc như hình vẽ bên dưới và hình thang cân MNPQ (MN // PQ) có góc M = 125°. Xét tính Đúng/Sai:" + svgCau15,
+                items: [
+                    { label: "a) Số đo góc B của tứ giác ABCD bằng 85°.", ans: true },
+                    { label: "b) Tứ giác ABCD là hình thang có hai đáy là AB và CD.", ans: false },
+                    { label: "c) Trong hình thang cân MNPQ (MN // PQ), số đo góc N bằng 55°.", ans: false },
+                    { label: "d) Hai đường chéo MP và NQ của hình thang cân MNPQ bằng nhau.", ans: true }
+                ],
+                exp: "a) Đúng: Góc B = 360° − (95° + 120° + 60°) = 85°.<br>b) Sai: Vì góc D + góc C = 120° + 60° = 180° nên AD // BC (hai đáy là AD và BC).<br>c) Sai: Hai góc kề đáy MN bằng nhau nên góc N = góc M = 125°.<br>d) Đúng."
+            }
+        ];
+
+        // PHẦN III: 3 CÂU TRẢ LỜI NGẮN ĐIỀN KHUYẾT (1,0 điểm)
+        const saQuestions = [
+            {
+                id: 16,
+                q: "Câu 16 (Bài 3c): Tính giá trị của đa thức C = 3x<sup>2</sup> + 7x<sup>3</sup> − 3x<sup>2</sup> + 6 − 6x<sup>3</sup> − 5 tại x = −1.",
+                unit: "Giá trị C =",
+                ans: ["0"],
+                exp: "Thu gọn đa thức: C = (3x<sup>2</sup> − 3x<sup>2</sup>) + (7x<sup>3</sup> − 6x<sup>3</sup>) + (6 − 5) = x<sup>3</sup> + 1. Thay x = −1 vào: C = (−1)<sup>3</sup> + 1 = 0."
+            },
+            {
+                id: 17,
+                q: "Câu 17 (Bài 11b): Cho tứ giác EFGH có góc F = 90°, góc H = 90° và góc E = 100° như hình vẽ. Tìm số đo độ của góc x:" + svgCau17,
+                unit: "x = (độ)",
+                ans: ["80"],
+                exp: "Tổng 4 góc trong tứ giác EFGH bằng 360° ⇒ x = 360° − (90° + 90° + 100°) = 80°."
+            },
+            {
+                id: 18,
+                q: "Câu 18 (Bài 11c): Cho tứ giác IKLR có góc ngoài tại đỉnh K bằng 100°, góc ngoài tại đỉnh L bằng 60° và góc trong tại R bằng 90°. Số đo góc trong x tại đỉnh I bằng bao nhiêu độ?",
+                unit: "x = (độ)",
+                ans: ["70"],
+                exp: "Góc trong tại K là 180° − 100° = 80°; góc trong tại L là 180° − 60° = 120°. Vậy góc trong tại I là x = 360° − (80° + 120° + 90°) = 70°."
+            }
+        ];
+
+        let state = {
+            mcq: new Array(12).fill(null),
+            tf: [
+                [null, null, null, null],
+                [null, null, null, null],
+                [null, null, null, null]
+            ],
+            sa: ["", "", ""],
+            isSubmitted: false
+        };
+
+        function initQuiz() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.isSubmitted) {
+                        state = parsed;
+                    }
+                }
+            } catch (e) {}
+
+            renderAll();
+            if (state.isSubmitted) {
+                showFinalScore();
+            }
+        }
+
+        function renderAll() {
+            renderMCQ();
+            renderTF();
+            renderSA();
+            updateProgress();
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = '';
+
+            mcqQuestions.forEach((item, qIdx) => {
+                const optsHtml = item.opts.map((optText, oIdx) => {
+                    const isSelected = state.mcq[qIdx] === oIdx;
+                    let btnStyle = "bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100";
+                    let badgeStyle = "bg-white border-slate-300 text-slate-600";
+
+                    if (!state.isSubmitted && isSelected) {
+                        btnStyle = "bg-blue-50 border-blue-600 text-blue-900 ring-2 ring-blue-500/20";
+                        badgeStyle = "bg-blue-600 border-blue-600 text-white";
+                    } else if (state.isSubmitted) {
+                        if (oIdx === item.ans) {
+                            btnStyle = "bg-emerald-50 border-emerald-600 text-emerald-900 ring-2 ring-emerald-500/20";
+                            badgeStyle = "bg-emerald-600 border-emerald-600 text-white";
+                        } else if (isSelected && oIdx !== item.ans) {
+                            btnStyle = "bg-rose-50 border-rose-600 text-rose-900";
+                            badgeStyle = "bg-rose-600 border-rose-600 text-white";
+                        }
+                    }
+
+                    const letter = String.fromCharCode(65 + oIdx);
+                    return `
+                        <button type="button"
+                            ${state.isSubmitted ? 'disabled' : ''}
+                            onclick="selectMcq(${qIdx}, ${oIdx})"
+                            class="option-btn w-full text-left p-3 rounded-xl border-2 flex items-center gap-3 ${btnStyle}">
+                            <span class="w-7 h-7 rounded-lg border flex items-center justify-center font-bold text-xs shrink-0 ${badgeStyle}">
+                                ${letter}
+                            </span>
+                            <span class="font-semibold text-xs sm:text-sm leading-snug">${optText}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                const expHtml = state.isSubmitted ? `
+                    <div class="mt-3 p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 text-xs text-slate-700 leading-relaxed">
+                        <div class="font-bold text-emerald-800 mb-0.5">
+                            ${state.mcq[qIdx] === item.ans ? '🎉 Chính xác (+0,5đ)' : `❌ Chưa đúng (Đáp án đúng: ${String.fromCharCode(65 + item.ans)})`}
+                        </div>
+                        <b>Lời giải:</b> ${item.exp}
+                    </div>
+                ` : '';
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#800020] bg-rose-50 px-2.5 py-0.5 rounded-md">
+                                Câu ${item.id} / 18
+                            </span>
+                            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${item.badgeColor}">
+                                ${item.level}
+                            </span>
+                        </div>
+                        <div class="font-bold text-slate-800 text-xs sm:text-sm mb-3 leading-relaxed">
+                            ${item.q}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            ${optsHtml}
+                        </div>
+                        ${expHtml}
+                    </div>
+                `);
+            });
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = '';
+
+            tfQuestions.forEach((item, tIdx) => {
+                const rowsHtml = item.items.map((sub, sIdx) => {
+                    const userVal = state.tf[tIdx][sIdx];
+                    let rowBg = "bg-slate-50 border-slate-200";
+                    if (state.isSubmitted) {
+                        const isRight = userVal === sub.ans;
+                        rowBg = isRight ? "bg-emerald-50 border-emerald-300" : "bg-rose-50 border-rose-300";
+                    }
+
+                    const trueBtnStyle = userVal === true
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-slate-700 border-slate-300";
+
+                    const falseBtnStyle = userVal === false
+                        ? "bg-rose-600 text-white border-rose-600"
+                        : "bg-white text-slate-700 border-slate-300";
+
+                    return `
+                        <div class="p-2.5 rounded-xl border ${rowBg} flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="text-xs sm:text-sm font-medium text-slate-800 leading-snug flex-1">
+                                ${sub.label}
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button type="button"
+                                    ${state.isSubmitted ? 'disabled' : ''}
+                                    onclick="selectTf(${tIdx}, ${sIdx}, true)"
+                                    class="px-3.5 py-1.5 rounded-lg border font-bold text-xs transition-all ${trueBtnStyle}">
+                                    👍 Đúng
+                                </button>
+                                <button type="button"
+                                    ${state.isSubmitted ? 'disabled' : ''}
+                                    onclick="selectTf(${tIdx}, ${sIdx}, false)"
+                                    class="px-3.5 py-1.5 rounded-lg border font-bold text-xs transition-all ${falseBtnStyle}">
+                                    👎 Sai
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const expHtml = state.isSubmitted ? `
+                    <div class="mt-3 p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 text-xs text-slate-700 leading-relaxed">
+                        <b>Lời giải chi tiết:</b><br>${item.exp}
+                    </div>
+                ` : '';
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-rose-800 bg-rose-50 px-2.5 py-0.5 rounded-md">
+                                Câu ${item.id} / 18
+                            </span>
+                            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800">
+                                Bảng bình chọn Đúng / Sai
+                            </span>
+                        </div>
+                        <div class="font-bold text-slate-800 text-xs sm:text-sm mb-3 leading-relaxed">
+                            ${item.q}
+                        </div>
+                        <div class="space-y-2">
+                            ${rowsHtml}
+                        </div>
+                        ${expHtml}
+                    </div>
+                `);
+            });
+        }
+
+        function renderSA() {
+            const container = document.getElementById('sa-container');
+            container.innerHTML = '';
+
+            saQuestions.forEach((item, sIdx) => {
+                const val = state.sa[sIdx] || "";
+                let inputStyle = "border-slate-300 bg-slate-50 text-blue-900 focus:border-blue-600";
+                if (state.isSubmitted) {
+                    const cleaned = val.trim().replace(',', '.').replace(/°/g, '');
+                    const isRight = item.ans.includes(cleaned);
+                    inputStyle = isRight
+                        ? "border-emerald-600 bg-emerald-50 text-emerald-900"
+                        : "border-rose-600 bg-rose-50 text-rose-900";
+                }
+
+                const expHtml = state.isSubmitted ? `
+                    <div class="mt-3 p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 text-xs text-slate-700 leading-relaxed">
+                        <div class="font-bold text-emerald-800 mb-0.5">Đáp án đúng: ${item.ans[0]}</div>
+                        <b>Lời giải:</b> ${item.exp}
+                    </div>
+                ` : '';
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md">
+                                Câu ${item.id} / 18
+                            </span>
+                            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                Trả lời ngắn • Điền khuyết
+                            </span>
+                        </div>
+                        <div class="font-bold text-slate-800 text-xs sm:text-sm mb-3 leading-relaxed">
+                            ${item.q}
+                        </div>
+                        <div class="flex items-center gap-2.5 bg-slate-100 p-2.5 rounded-xl">
+                            <span class="text-xs sm:text-sm font-bold text-slate-700">${item.unit}</span>
+                            <input type="text"
+                                inputmode="numeric"
+                                ${state.isSubmitted ? 'disabled' : ''}
+                                value="${val}"
+                                oninput="updateSa(${sIdx}, this.value)"
+                                placeholder="Nhập đáp án..."
+                                class="flex-1 max-w-[160px] px-3 py-2 rounded-lg border-2 font-extrabold text-sm text-center outline-none ${inputStyle}">
+                        </div>
+                        ${expHtml}
+                    </div>
+                `);
+            });
+        }
+
+        function selectMcq(qIdx, oIdx) {
+            if (state.isSubmitted) return;
+            state.mcq[qIdx] = oIdx;
+            renderMCQ();
+            updateProgress();
+        }
+
+        function selectTf(tIdx, sIdx, val) {
+            if (state.isSubmitted) return;
+            state.tf[tIdx][sIdx] = val;
+            renderTF();
+            updateProgress();
+        }
+
+        function updateSa(sIdx, val) {
+            if (state.isSubmitted) return;
+            state.sa[sIdx] = val;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let done = 0;
+            state.mcq.forEach(v => { if (v !== null) done++; });
+            state.tf.forEach(arr => {
+                if (arr.some(v => v !== null)) done++;
+            });
+            state.sa.forEach(v => { if (v && v.trim() !== "") done++; });
+
+            const percent = Math.round((done / 18) * 100);
+            document.getElementById('progress-badge').innerText = `Đã làm: ${done}/18`;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+        }
+
+        function toggleMantra() {
+            const content = document.getElementById('mantra-content');
+            const icon = document.getElementById('mantra-icon');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.innerText = 'Thu gọn ▲';
+            } else {
+                content.classList.add('hidden');
+                icon.innerText = 'Mở xem ▼';
+            }
+        }
+
+        function openConfirmModal() {
+            if (state.isSubmitted) return;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+        }
+
+        function submitAndLockQuiz() {
+            closeConfirmModal();
+            state.isSubmitted = true;
+
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {}
+
+            renderAll();
+            showFinalScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showFinalScore() {
+            let mcqScore = 0;
+            mcqQuestions.forEach((item, idx) => {
+                if (state.mcq[idx] === item.ans) mcqScore += 0.5;
+            });
+
+            let tfScore = 0;
+            tfQuestions.forEach((item, tIdx) => {
+                let subCorrect = 0;
+                item.items.forEach((sub, sIdx) => {
+                    if (state.tf[tIdx][sIdx] === sub.ans) subCorrect++;
+                });
+                if (subCorrect === 4) tfScore += 1.0;
+                else if (subCorrect === 3) tfScore += 0.5;
+                else if (subCorrect === 2) tfScore += 0.25;
+                else if (subCorrect === 1) tfScore += 0.1;
+            });
+
+            let saCorrect = 0;
+            saQuestions.forEach((item, sIdx) => {
+                const cleaned = (state.sa[sIdx] || "").trim().replace(',', '.').replace(/°/g, '');
+                if (item.ans.includes(cleaned)) saCorrect++;
+            });
+            const saScore = (saCorrect / saQuestions.length) * 1.0;
+
+            const total = mcqScore + tfScore + saScore;
+
+            document.getElementById('lock-banner').classList.remove('hidden');
+            const resultBox = document.getElementById('result-box');
+            resultBox.classList.remove('hidden');
+
+            document.getElementById('score-text').innerText = `${total.toFixed(2).replace(/\.00$/, '')} / 10 điểm`;
+            document.getElementById('score-detail').innerText = `Phần I (TN): ${mcqScore.toFixed(2)}đ | Phần II (Đ/S): ${tfScore.toFixed(2)}đ | Phần III (Điền khuyết): ${saScore.toFixed(2)}đ`;
+
+            const comment = document.getElementById('score-comment');
+            if (total >= 8.5) {
+                comment.innerText = "🏆 Xuất sắc! Em đã nắm rất vững kiến thức Giữa kì I Toán 8!";
+            } else if (total >= 6.5) {
+                comment.innerText = "🌟 Khá giỏi! Em hãy xem kỹ lời giải chi tiết bên dưới ở những câu sai nhé!";
+            } else {
+                comment.innerText = "📖 Em hãy đọc kỹ lời giải chi tiết từng câu bên dưới để ôn lại kiến thức nhé!";
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.className = "w-full bg-slate-500 text-white font-bold py-3.5 px-6 rounded-xl text-sm sm:text-base cursor-not-allowed flex items-center justify-center gap-2";
+            submitBtn.innerHTML = `<span>🔒 ĐÃ NỘP BÀI VÀ KHÓA KẾT QUẢ</span>`;
+        }
+
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
